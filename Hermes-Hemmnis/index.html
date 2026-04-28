@@ -13,6 +13,29 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="175468c8-cf5a-4361-869e-e9b57107e385"></script>
 </head>
 <body>
+  <div id="password-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;color:#fff;font-family:monospace;">
+    <p style="letter-spacing:0.2em;margin-bottom:20px;">HERMES HEMMNIS</p>
+    <input type="password" id="pw-input" placeholder="hermeshemmtnoch" style="background:transparent;border:none;border-bottom:1px solid #fff;color:#fff;text-align:center;font-family:monospace;letter-spacing:0.2em;outline:none;padding:8px;">
+  </div>
+</div>
+
+<script>
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value === 'DEINPASSWORT') {
+        document.getElementById('password-screen').style.display = 'none';
+        sessionStorage.setItem('auth', 'true');
+      } else {
+        this.value = '';
+        this.placeholder = 'TRY AGAIN';
+      }
+    }
+  });
+  if (sessionStorage.getItem('auth') === 'true') {
+    document.getElementById('password-screen').style.display = 'none';
+  }
+</script>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
