@@ -8,8 +8,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="./pictures/favicon2.png">
+  <link rel="stylesheet" href="style.css"><link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="./pictures/helm3.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
   <script defer src="https://cloud.umami.is/script.js" data-website-id="175468c8-cf5a-4361-869e-e9b57107e385"></script>
 </head>
 <body>
@@ -104,12 +107,12 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
       <div class="tree">
         <div class="tree-item">
           <a href="#about" class="nav-link" data-person="till">
-            <div class="row">Till Knapp<span class="about-arrow">→</span></div>
+            <div class="row">Till Knapp</div>
           </a>
         </div>
         <div class="tree-item">
           <a href="#about" class="nav-link" data-person="lennart">
-            <div class="row">Lennart Häusser<span class="about-arrow">→</span></div>
+            <div class="row">Lennart Häusser</div>
           </a>
         </div>
       </div>
@@ -131,6 +134,9 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
         <div class="tree-item">
           <a href="#dates-2023" class="nav-link"><div class="row">2023</div></a>
         </div>
+        <div class="tree-item">
+          <a href="#dates-all" class="nav-link"><div class="row">Upcoming and past</div></a>
+        </div>
       </div>
     </div>
 
@@ -149,6 +155,10 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
         <svg viewBox="0 0 24 24"><polygon points="3,6 15,6 21,18 9,18"></polygon></svg>
       </a>
     </div>
+  </div>
+
+  <div class="hermes-run-stage">
+    <img src="pictures/Hermes-läuft.png" class="hermes-run-img" alt="">
   </div>
 
 </aside>
@@ -252,7 +262,7 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
   <div class="section-wrap">
     <section id="work-1" class="section-fullscreen">
      <video class="bg-media" id="video-1" 
-  data-hls="https://vz-64816067-a45.b-cdn.net/242f6c25-ce95-47fd-a499-a8400fa0db53/playlist.m3u8"
+  data-hls="https://vz-64816067-a45.b-cdn.net/6bd60ee1-68c9-4533-9e74-df29674c7a00/playlist.m3u8"
     loop playsinline>
 </video>
       <div class="overlay-header-wrap">
@@ -286,8 +296,9 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
   <!-- WORK 2: Longing -->
   <div class="section-wrap">
     <section id="work-2" class="section-fullscreen">
-      <video class="bg-media" id="video-2">
-        <source src="assets/video/Longing-vid-shrtr.mp4" type="video/mp4">
+      <video class="bg-media" id="video-2"
+        data-hls="https://vz-64816067-a45.b-cdn.net/7b83cc48-31c9-4cb9-8315-0733407a57ba/playlist.m3u8"
+        playsinline>
       </video>
       <div class="overlay-header-wrap">
         <div class="overlay-header" onclick="toggleHeader(this)">
@@ -446,7 +457,7 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
 
     <!-- Kassette: Noch einmal so lange träumen -->
     <div class="cassette cassette-noch" id="cass-noch">
-      <img src="./pictures/Nur-noch_Cass.png" class="cassette-img">
+      <img src="./pictures/Nur-noch_Cass_richtig.png" class="cassette-img">
     </div>
   </div>
 
@@ -470,7 +481,7 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
             <li><span class="track-num">004</span><span class="track-title">Noch einmal so lange träumen</span><span class="track-dur">02:48</span></li>
             <li><span class="track-num">005</span><span class="track-title">Soweit entfernt,</span><span class="track-dur">02:41</span></li>
           </ul>
-          <a class="bandcamp-link" href="https://hermeshemmnis.bandcamp.com/album/only-a-picture">→ GET YOUR COPY AT BANDCAMP</a>
+          <a class="bandcamp-link" href="https://hermeshemmnis.bandcamp.com/album/only-a-picture">GET YOUR COPY AT BANDCAMP 🡭</a>
         </div>
       </div>
       </div>
@@ -494,7 +505,7 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
             <li><span class="track-num">004</span><span class="track-title">Noch einmal so lange träumen</span><span class="track-dur">02:48</span></li>
             <li><span class="track-num">005</span><span class="track-title">Soweit entfernt,</span><span class="track-dur">02:41</span></li>
           </ul>
-          <a class="bandcamp-link" href="https://hermeshemmnis.bandcamp.com/album/noch-einmal-so-lange-tr-umen">→ GET YOUR COPY AT BANDCAMP</a>
+          <a class="bandcamp-link" href="https://hermeshemmnis.bandcamp.com/album/noch-einmal-so-lange-tr-umen">GET YOUR COPY AT BANDCAMP 🡭</a>
         </div>
       </div>
     </div>
@@ -578,8 +589,11 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
       <div class="dates-box empty"></div>
 
       <div class="dates-box" id="box-mom" data-bg="./pictures/MomArtSpace.webp">
-        <span class="dates-date">27/03/2026</span>
-        <span class="dates-title">MOM art space</span>
+        <div class="dates-info">
+          <span class="dates-date">27/03/2026</span>
+          <span class="dates-title">MOM art space</span>
+        </div>
+        <div class="dates-detail">Live Session at Exhibition: FLÜSSE, FLUIDE HORIZONTE</div>
         <span class="dates-location">Hamburg, DE</span>
       </div>
 
@@ -589,8 +603,11 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
       <div class="dates-box empty"></div>
 
       <div class="dates-box" data-bg="./pictures/flusi_Fuss.webp">
-        <span class="dates-date">14/03/2026</span>
-        <span class="dates-title">Flussschifferkirche</span>
+        <div class="dates-info">
+          <span class="dates-date">14/03/2026</span>
+          <span class="dates-title">Flussschifferkirche</span>
+        </div>
+        <div class="dates-detail">EP Release Concert "Only A Picture"</div>
         <span class="dates-location">Hamburg, DE</span>
       </div>
       <div class="dates-box empty"></div>
@@ -609,8 +626,11 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
       <div class="dates-box empty"></div>
 
       <div class="dates-box" data-bg="./pictures/Schimmelreiter_Ausschnitt.webp">
-        <span class="dates-date">28/02/2026</span>
-        <span class="dates-title">Hörbar/B-Movie</span>
+        <div class="dates-info">
+          <span class="dates-date">28/02/2026</span>
+          <span class="dates-title">Hörbar/B-Movie</span>
+        </div>
+        <div class="dates-detail">Film Screening with Live Soundtrack</div>
         <span class="dates-location">Hamburg, DE</span>
       </div>
       <div class="dates-box empty"></div>
@@ -931,7 +951,202 @@ COMPOSITION. <br> FIELD RECORDING. <br>SOUND RESEARCH.<br><br>
   </section>
 </div>
 
+<!-- DATES ALL -->
+<div class="section-wrap">
+  <section id="dates-all" class="dates-all-section">
+    <div class="dates-all-list">
 
+      <div class="dates-all-item" data-bg="./pictures/MomArtSpace.webp">
+        <span class="dates-all-date">27/03/2026</span>
+        <span class="dates-all-title">MOM art space</span>
+        <span class="dates-all-detail">Live Session at Exhibition: FLÜSSE, FLUIDE HORIZONTE.</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/flusi_Fuss.webp">
+        <span class="dates-all-date">14/03/2026</span>
+        <span class="dates-all-title">Flussschifferkirche</span>
+        <span class="dates-all-detail">EP Release Concert</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Schimmelreiter_Ausschnitt.webp">
+        <span class="dates-all-date">28/02/2026</span>
+        <span class="dates-all-title">Hörbar/B-Movie</span>
+        <span class="dates-all-detail">Film Screening with Livesoundtrack</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+
+      <div class="dates-all-item" data-bg="./pictures/Hermes_2025.webp">
+        <span class="dates-all-date">13/09/2025</span>
+        <span class="dates-all-title">Frappant Galerie</span>
+        <span class="dates-all-detail">Concert at Exhibition, Elisa Nessler: CRUSHES</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Longing3.webp">
+        <span class="dates-all-date">19/08/2025</span>
+        <span class="dates-all-title">Public Space</span>
+        <span class="dates-all-detail">Workshop with Move Makers and Skellefteå Dans & Balettförening</span>
+        <span class="dates-all-location">Skellefteå, SE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Kirchturm_Recording.webp">
+        <span class="dates-all-date">13/07/2025</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">Live Listening Session</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/ListeningSess_Plakat.webp">
+        <span class="dates-all-date">12/07/2025</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">Live Listening Session</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Kirchturm_Recording.webp">
+        <span class="dates-all-date">11/07/2025</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">Live Listening Session</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/48hwilhelmsburg.webp">
+        <span class="dates-all-date">14/06/2025</span>
+        <span class="dates-all-title">Wälderhaus</span>
+        <span class="dates-all-detail">48h Wilhelmsburg, Community Festival</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Plau-Tour.webp">
+        <span class="dates-all-date">31/05/2025</span>
+        <span class="dates-all-title">Vekks</span>
+        <span class="dates-all-detail">Tour w/PLAU</span>
+        <span class="dates-all-location">Vienna, AT</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Plau-Tour.webp">
+        <span class="dates-all-date">29/05/2025</span>
+        <span class="dates-all-title">N° Space</span>
+        <span class="dates-all-detail">Tour w/PLAU</span>
+        <span class="dates-all-location">Budapest, HU</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Plau-Tour.webp">
+        <span class="dates-all-date">27/05/2025</span>
+        <span class="dates-all-title">Kräftner</span>
+        <span class="dates-all-detail">Tour w/PLAU</span>
+        <span class="dates-all-location">Graz, AT</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Plau-Tour.webp">
+        <span class="dates-all-date">24/05/2025</span>
+        <span class="dates-all-title">Raum der Zeit</span>
+        <span class="dates-all-detail">Tour w/PLAU</span>
+        <span class="dates-all-location">Leipzig, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Plau-Tour.webp">
+        <span class="dates-all-date">23/05/2025</span>
+        <span class="dates-all-title">Gelegenheiten</span>
+        <span class="dates-all-detail">Tour w/PLAU</span>
+        <span class="dates-all-location">Leipzig, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Lit-haus.webp">
+        <span class="dates-all-date">08/04/2025</span>
+        <span class="dates-all-title">Literaturhaus</span>
+        <span class="dates-all-detail">Concert at Exhibition: DUHOVI UPORA, WIDERSTANDSGEISTER, SPIRITS OF RESISTANCE.</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Radio-Poster.webp">
+        <span class="dates-all-date">01/02/2025</span>
+        <span class="dates-all-title">Westwerk</span>
+        <span class="dates-all-detail">Concert at Book Presentation: Radio as Radical Education</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Longing(1).webp">
+        <span class="dates-all-date">30/01/2025</span>
+        <span class="dates-all-title">Public Space</span>
+        <span class="dates-all-detail">Performance with Move Makers: Hold on. Slow Hands,</span>
+        <span class="dates-all-location">Stockholm, SE</span>
+      </div>
+
+      <div class="dates-all-item" data-bg="./pictures/Pipe-Organ_1.webp">
+        <span class="dates-all-date">10/11/2024</span>
+        <span class="dates-all-title">Christopherushaus</span>
+        <span class="dates-all-detail">Site-specific Concert with Pipe Organ, Literaturfestival</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Glistening_Publikum.webp">
+        <span class="dates-all-date">11/04/2024</span>
+        <span class="dates-all-title">Galerie Phoenix</span>
+        <span class="dates-all-detail">Concert, Curation and Exhibition: Longing</span>
+        <span class="dates-all-location">Bratislava, SK</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Glistening.webp">
+        <span class="dates-all-date">09/04/2024</span>
+        <span class="dates-all-title">A4 Space</span>
+        <span class="dates-all-detail">Glistening</span>
+        <span class="dates-all-location">Bratislava, SK</span>
+      </div>
+
+      <div class="dates-all-item" data-bg="./pictures/hermes_hemnis_i_punkt_davidreineke_2023_7684.webp">
+        <span class="dates-all-date">18/11/2023</span>
+        <span class="dates-all-title">Skateland, I Punkt</span>
+        <span class="dates-all-detail">Site-specific Concert</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/TagDanach_1.webp">
+        <span class="dates-all-date">13/10/2023</span>
+        <span class="dates-all-title">NYT</span>
+        <span class="dates-all-detail">Concert at Exhibition, Sophia Leitenmayer & Christina Rüesch: Whisper Whisper.</span>
+        <span class="dates-all-location">Berlin, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Skateland_Plakat.webp">
+        <span class="dates-all-date">01/10/2023</span>
+        <span class="dates-all-title">Kunstverein Gastgarten</span>
+        <span class="dates-all-detail">Chris Max Paul: Der Tag danach</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/654430017_18081351362522563_5576149193365751538_n.webp">
+        <span class="dates-all-date">09/09/2023</span>
+        <span class="dates-all-title">MS Stubnitz</span>
+        <span class="dates-all-detail">Floating Transmissions</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Gabelstapler1.webp">
+        <span class="dates-all-date">16/07/2023</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">w/Frank Koenen</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Franktanzt(1).webp">
+        <span class="dates-all-date">15/07/2023</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">w/Frank Koenen</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/HermesTanzt.webp">
+        <span class="dates-all-date">14/07/2023</span>
+        <span class="dates-all-title">HFBK</span>
+        <span class="dates-all-detail">w/Frank Koenen</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+      <div class="dates-all-item" data-bg="./pictures/Gabelstapler2.webp">
+        <span class="dates-all-date">22/06/2023</span>
+        <span class="dates-all-title">Kulturhaus 73</span>
+        <span class="dates-all-detail">Hammer, Amboss, Steigbügel.</span>
+        <span class="dates-all-location">Hamburg, DE</span>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- PARTICLE 2 -->
+<div class="section-wrap">
+  <section id="particle-2" class="section-fullscreen">
+    <video class="bg-media" id="video-p2" data-hls="https://vz-64816067-a45.b-cdn.net/cf9c628d-fb24-42e1-b8fb-21f3aa07bbd5/playlist.m3u8" loop autoplay muted playsinline></video>
+    <div id="container-2"></div>
+  </section>
+</div>
+
+<!-- PARTICLE 3 -->
+<div class="section-wrap">
+  <section id="particle-3" class="section-fullscreen">
+    <video class="bg-media" id="video-p3" data-hls="https://vz-64816067-a45.b-cdn.net/31767c97-11bd-4b40-89bd-971f7b672949/playlist.m3u8" loop autoplay muted playsinline></video>
+    <div id="container-3"></div>
+  </section>
+</div>
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>

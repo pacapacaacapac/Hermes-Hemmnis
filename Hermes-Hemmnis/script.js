@@ -3,130 +3,151 @@
 /* =========================
    PARTICLE BACKGROUND
 ========================= */
-var NUM_PARTICLES = ( ( ROWS = 360 ) * ( COLS = 360 ) ),
-    THICKNESS = Math.pow( 80, 2 ),
-    SPACING = 1.2,
-    MARGIN = 200,
-    COLOR = 0,
-    DRAG = 0.95,
-    EASE = 0.25,
-    container,
-    particle,
-    canvas,
-    mouse,
-    stats,
-    list,
-    ctx,
-    tog,
-    man,
-    dx, dy,
-    mx, my,
-    d, t, f,
-    a, b,
-    i, n,
-    w, h,
-    p, s,
-    r, c
-    ;
+function createParticles(containerId, cfg) {
+  cfg = Object.assign({
+    ROWS: 360, COLS: 360,
+    THICKNESS: Math.pow(80, 2),
+    SPACING: 1.2,
+    MARGIN: 200,
+    COLOR: 0,
+    DRAG: 0.95,
+    EASE: 0.25
+  }, cfg);
 
-particle = {
-  vx: 0,
-  vy: 0,
-  x: 0,
-  y: 0
-};
+  var NUM = cfg.ROWS * cfg.COLS;
+  var proto = { vx: 0, vy: 0, x: 0, y: 0 };
+  var container, canvas, ctx, list, tog, man, mx, my, w, h;
+  var eCols = cfg.COLS;
 
-function init() {
-  container = document.getElementById( 'container' );
-  canvas = document.createElement( 'canvas' );
-
-  ctx = canvas.getContext( '2d' );
-  man = false;
-  tog = true;
-
-  list = [];
-
-  w = canvas.width  = COLS * SPACING + MARGIN * 2;
-  h = canvas.height = ROWS * SPACING + MARGIN * 2;
-
-  container.style.marginLeft = Math.round( w * -0.5 ) + 'px';
-  container.style.marginTop  = Math.round( h * -0.5 ) + 'px';
-
-  for ( i = 0; i < NUM_PARTICLES; i++ ) {
-    p = Object.create( particle );
-    s = ( i % COLS ) / COLS;
-    r = Math.floor( i / COLS );
-    n = Math.max( 0, Math.round(
-      ( 117
-        - Math.sin( s * Math.PI * 2.3 ) * 50
-        - Math.sin( s * Math.PI * 5.1 ) * 25
-        - Math.sin( s * Math.PI * 11.7 ) * 12
-        - Math.sin( s * Math.PI * 0.7 ) * 30
-      ) / ( SPACING * 2 )
-    ) );
-    p.x = p.ox = MARGIN + SPACING * ( i % COLS );
-    p.y = p.oy = r < n ? -MARGIN : MARGIN + SPACING * r;
-    p.phase = Math.random() * Math.PI * 2;
-    list[i] = p;
+  function init() {
+    container = document.getElementById(containerId);
+    if (!container) return;
+    canvas = document.createElement('canvas');
+    ctx = canvas.getContext('2d');
+    man = false; tog = true; list = [];
+    var s, marginX, marginY;
+    if (cfg.FILL_VIEWPORT) {
+      var section = container.closest('.section-fullscreen') || container.parentElement;
+      var vw = section ? section.offsetWidth  : window.innerWidth;
+      var vh = section ? section.offsetHeight : window.innerHeight;
+      if (!vw || !vh) { vw = window.innerWidth; vh = window.innerHeight; }
+      w = canvas.width  = vw;
+      h = canvas.height = vh;
+      s = cfg.SPACING;
+      eCols      = Math.floor(w / s);
+      var eRows  = Math.floor(h / s);
+      NUM        = eCols * eRows;
+      marginX    = (w - eCols * s) / 2;
+      marginY    = (h - eRows * s) / 2;
+    } else {
+      s = cfg.SPACING;
+      eCols   = cfg.COLS;
+      w = canvas.width  = eCols * s + cfg.MARGIN * 2;
+      h = canvas.height = cfg.ROWS * s + cfg.MARGIN * 2;
+      marginX = marginY = cfg.MARGIN;
+    }
+    container.style.marginLeft = Math.round(w * -0.5) + 'px';
+    container.style.marginTop  = Math.round(h * -0.5) + 'px';
+    for (var i = 0; i < NUM; i++) {
+      var p = Object.create(proto);
+      var r = Math.floor(i / eCols);
+      var jitter = (cfg.JITTER || 0) * s;
+      p.x = p.ox = marginX + s * (i % eCols) + (Math.random() - 0.5) * jitter;
+      p.y = p.oy = marginY + s * r + (Math.random() - 0.5) * jitter;
+      p.phase = Math.random() * Math.PI * 2;
+      list[i] = p;
+    }
+    container.addEventListener('mousemove', function(e) {
+      var bounds = container.getBoundingClientRect();
+      mx = e.clientX - bounds.left;
+      my = e.clientY - bounds.top;
+      man = true;
+    });
+    container.appendChild(canvas);
   }
 
-  container.addEventListener( 'mousemove', function(e) {
-    bounds = container.getBoundingClientRect();
-    mx = e.clientX - bounds.left;
-    my = e.clientY - bounds.top;
-    man = true;
-  });
-
-  if ( typeof Stats === 'function' ) {
-    document.body.appendChild( ( stats = new Stats() ).domElement );
+  function step() {
+    if (!ctx || !w || !h) { requestAnimationFrame(step); return; }
+    var i, p, dx, dy, d, f, t, a, b, px, py, n, now;
+    if (tog = !tog) {
+      if (!man) {
+        t = +new Date() * 0.001;
+        if (cfg.FILL_VIEWPORT) {
+          mx = w * 0.5 + (Math.cos(t * 2.1) * Math.cos(t * 0.9) * w * 0.45);
+          my = h * 0.5 + (Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45);
+        } else {
+          mx = w * 1 + (Math.cos(t * 2.1) * Math.cos(t * 0.9) * w * 0.45);
+          my = h * 1 + (Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45);
+        }
+      }
+      for (i = 0; i < NUM; i++) {
+        p = list[i];
+        d = (dx = mx - p.x) * dx + (dy = my - p.y) * dy;
+        f = -cfg.THICKNESS / d;
+        if (d < cfg.THICKNESS) {
+          t = Math.atan2(dy, dx);
+          p.vx += f * Math.cos(t);
+          p.vy += f * Math.sin(t);
+        }
+        p.x += (p.vx *= cfg.DRAG) + (p.ox - p.x) * cfg.EASE;
+        p.y += (p.vy *= cfg.DRAG) + (p.oy - p.y) * cfg.EASE;
+      }
+    } else {
+      b = (a = ctx.createImageData(w, h)).data;
+      now = +new Date() * 0.001;
+      for (i = 0; i < NUM; i++) {
+        p = list[i];
+        px = ~~p.x; py = ~~p.y;
+        if (px >= 0 && py >= 0 && px < w && py < h) {
+          b[n = (px + py * w) * 4] = b[n+1] = b[n+2] = cfg.COLOR;
+          b[n+3] = cfg.ALPHA !== undefined ? cfg.ALPHA : 180 + Math.sin(now * 0.8 + p.phase) * 75;
+        }
+      }
+      ctx.putImageData(a, 0, 0);
+    }
+    requestAnimationFrame(step);
   }
 
-  container.appendChild( canvas );
+  init();
+  step();
 }
 
-function step() {
-  if ( stats ) stats.begin();
+// Instanz 1 – original
+createParticles('container', {
+  ROWS: 360, COLS: 360,
+  THICKNESS: Math.pow(80, 2),
+  SPACING: 1.2,
+  MARGIN: 200,
+  COLOR: 0,
+  DRAG: 0.95,
+  EASE: 0.25
+});
 
-  if ( tog = !tog ) {
-    if ( !man ) {
-      t = +new Date() * 0.001;
-      mx = w * 1 + ( Math.cos( t * 2.1 ) * Math.cos( t * 0.9 ) * w * 0.45 );
-      my = h * 1 + ( Math.sin( t * 3.2 ) * Math.tan( Math.sin( t * 0.8 ) ) * h * 0.45 );
-    }
-      
-    for ( i = 0; i < NUM_PARTICLES; i++ ) {
-      p = list[i];
-      d = ( dx = mx - p.x ) * dx + ( dy = my - p.y ) * dy;
-      f = -THICKNESS / d;
-      if ( d < THICKNESS ) {
-        t = Math.atan2( dy, dx );
-        p.vx += f * Math.cos(t);
-        p.vy += f * Math.sin(t);
-      }
-      p.x += ( p.vx *= DRAG ) + (p.ox - p.x) * EASE;
-      p.y += ( p.vy *= DRAG ) + (p.oy - p.y) * EASE;
-    }
+// Instanz 2 – anpassbar
+createParticles('container-2', {
+  ROWS: 360, COLS: 360,
+  THICKNESS: Math.pow(80, 2),
+  SPACING: 3,
+  MARGIN: 200,
+  COLOR: 0,
+  DRAG: 0.95,
+  EASE: 0.25,
+  ALPHA: 255
+});
 
-  } else {
-    b = ( a = ctx.createImageData( w, h ) ).data;
-    var now = +new Date() * 0.001;
-    for ( i = 0; i < NUM_PARTICLES; i++ ) {
-      p = list[i];
-      var px = ~~p.x, py = ~~p.y;
-      if ( px >= 0 && py >= 0 && px < w && py < h ) {
-        b[n = ( px + py * w ) * 4] = b[n+1] = b[n+2] = COLOR;
-        b[n+3] = 180 + Math.sin( now * 0.8 + p.phase ) * 75;
-      }
-    }
-    ctx.putImageData( a, 0, 0 );
-  }
-
-  if ( stats ) stats.end();
-  requestAnimationFrame( step );
-}
-
-init();
-step();
+// Instanz 3 – anpassbar
+createParticles('container-3', {
+  ROWS: 360, COLS: 360,
+  THICKNESS: Math.pow(80, 2),
+  SPACING: 2.5,
+  MARGIN: 0,
+  COLOR: 0,
+  DRAG: 0.95,
+  EASE: 0.25,
+  ALPHA: 255,
+  JITTER: 0.8,
+  FILL_VIEWPORT: true
+});
 
 /* =========================
 Bunny Net Einbindung
@@ -140,6 +161,36 @@ document.querySelectorAll('video[data-hls]').forEach(video => {
     hls.attachMedia(video);
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = src;
+  }
+});
+
+document.querySelectorAll('video[data-hls]').forEach(video => {
+  const src = video.dataset.hls;
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      maxBufferLength: 30,        // 30 Sekunden vorladen
+      maxMaxBufferLength: 60,     // maximal 60 Sekunden
+    });
+    hls.loadSource(src);
+    hls.attachMedia(video);
+  }
+});
+
+document.querySelectorAll('video[data-hls]').forEach(video => {
+  const src = video.dataset.hls;
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      startLevel: -1,           // automatisch höchste Qualität wählen
+      abrEwmaDefaultEstimate: 5000000,  // startet mit 5 Mbps Annahme
+    });
+    hls.loadSource(src);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      hls.currentLevel = hls.levels.length - 1; // höchste Qualität erzwingen
+    });
   }
 });
 
@@ -289,7 +340,11 @@ function showPage(idx) {
   // Sidebar-Aktivierung
   const section = incoming.querySelector('section[id]') || incoming;
   const id = section.id;
-  navLinks.forEach(l => l.closest('.tree-item').classList.remove('active'));
+  navLinks.forEach(l => {
+    l.closest('.tree-item').classList.remove('active');
+    l.closest('.tree-item').classList.remove('person-selected');
+    l.closest('.tree-item').classList.remove('release-selected');
+  });
   if (id === 'releases') {
     document.querySelectorAll('.nav-link[href="#releases"]').forEach(l =>
       l.closest('.tree-item').classList.add('active'));
@@ -303,7 +358,19 @@ function showPage(idx) {
 }
 
 // Mausrad-Navigation
+let datesTopConfirmed = false;
 contentEl.addEventListener('wheel', e => {
+  const list = document.querySelector('.dates-all-list');
+  if (list && list.contains(e.target)) {
+    const atTop = list.scrollTop <= 0;
+    const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
+    if (e.deltaY > 0 && !atBottom) { datesTopConfirmed = false; return; }
+    if (e.deltaY < 0 && !atTop)    { datesTopConfirmed = false; return; }
+    if (e.deltaY < 0 && atTop) {
+      if (!datesTopConfirmed) { datesTopConfirmed = true; return; }
+      datesTopConfirmed = false;
+    }
+  }
   e.preventDefault();
   if (wheelLocked) return;
   wheelLocked = true;
@@ -355,9 +422,14 @@ navLinks.forEach(link => {
     const release = this.dataset.release;
     if (release === '1') setRelease('oap');
     if (release === '2') setRelease('noch');
+    if (release) {
+      document.querySelectorAll('.tree-item.release-selected').forEach(el => el.classList.remove('release-selected'));
+      this.closest('.tree-item').classList.add('release-selected');
+    }
 
     const person = this.dataset.person;
     if (person) handleAbout(person);
+
   });
 });
 
@@ -628,7 +700,10 @@ function handleAbout(id) {
   document.querySelectorAll('[id^="btn-till"], [id^="btn-lennart"]').forEach(b => b.textContent = '+');
 
   // Sidebar-Aktivierung zurücksetzen
-  document.querySelectorAll('.nav-link[data-person]').forEach(l => l.closest('.tree-item').classList.remove('active'));
+  document.querySelectorAll('.nav-link[data-person]').forEach(l => {
+    l.closest('.tree-item').classList.remove('active');
+    l.closest('.tree-item').classList.remove('person-selected');
+  });
 
   // Angeklicktes öffnen, falls es vorher zu war
   if (!isOpen) {
@@ -637,7 +712,10 @@ function handleAbout(id) {
     currentPerson = id;
     // Zugehörigen Sidebar-Eintrag aktivieren
     const sidebarLink = document.querySelector(`.nav-link[data-person="${id}"]`);
-    if (sidebarLink) sidebarLink.closest('.tree-item').classList.add('active');
+    if (sidebarLink) {
+      sidebarLink.closest('.tree-item').classList.add('active');
+      sidebarLink.closest('.tree-item').classList.add('person-selected');
+    }
   } else {
     currentPerson = null;
   }
@@ -748,6 +826,21 @@ document.querySelectorAll('.dates-box[data-bg]').forEach(box => {
 
   box.addEventListener('mouseenter', () => img.style.opacity = '1');
   box.addEventListener('mouseleave', () => img.style.opacity = '0');
+});
+
+document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
+  const section = item.closest('.dates-all-section');
+  const img = document.createElement('img');
+  img.src = item.dataset.bg;
+  img.className = 'bg-media bg-dates-hover';
+  section.appendChild(img);
+
+  item.querySelectorAll('span').forEach(span => {
+    span.addEventListener('mouseenter', () => img.style.opacity = '1');
+    span.addEventListener('mouseleave', e => {
+      if (!item.contains(e.relatedTarget)) img.style.opacity = '0';
+    });
+  });
 });
 
 /* =========================
