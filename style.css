@@ -1062,9 +1062,6 @@ body {
   font-family: 'Roboto Mono', monospace;
 }
 
-.about-header-row {
-  display: none;
-}
 
 .about-credits {
   position: absolute;
@@ -1077,6 +1074,58 @@ body {
   white-space: nowrap;
   letter-spacing: 0.05em;
   z-index: 3;
+}
+
+.about-hover-zone {
+  position: absolute;
+  top: 50%;
+  height: 50%;
+  cursor: pointer;
+  z-index: 3;
+}
+.about-hover-till {
+  left: 25%;
+  width: 20%;
+}
+.about-hover-lennart {
+  left: 55%;
+  width: 20%;
+}
+.about-hover-zone:hover .about-body {
+  max-height: min(25rem, 70vh);
+}
+.about-hover-zone:hover .about-name-label {
+  opacity: 1;
+}
+.about-name-label {
+  position: absolute;
+  top: 0;
+  font-size: 0.55rem;
+  color: #f5f5f5;
+  font-family: 'Roboto Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+.about-hover-till .about-name-label {
+  left: 0;
+}
+.about-hover-lennart .about-name-label {
+  right: 0;
+}
+.about-hover-zone .about-body {
+  position: absolute;
+  top: 1rem;
+  background: #f5f5f5;
+  width: clamp(12rem, 20vw, 18rem);
+}
+.about-hover-till .about-body {
+  left: 0;
+}
+.about-hover-lennart .about-body {
+  right: 0;
 }
 
 .release-credits {

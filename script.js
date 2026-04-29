@@ -844,6 +844,40 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
 });
 
 /* =========================
+   ABOUT HOVER ZONES
+========================= */
+(function () {
+  const aboutEl  = document.getElementById('about');
+  const bodyTill = document.getElementById('body-till');
+  const bodyLenn = document.getElementById('body-lennart');
+  if (!aboutEl || !bodyTill || !bodyLenn) return;
+
+  function openBody(b)  { b.style.setProperty('max-height', '400px'); }
+  function closeBody(b) { if (!b.classList.contains('open')) b.style.removeProperty('max-height'); }
+
+  let active = null;
+
+  document.addEventListener('mousemove', e => {
+    if (!aboutEl.classList.contains('active')) return;
+
+    const rect = aboutEl.getBoundingClientRect();
+    const inside = e.clientX >= rect.left && e.clientX <= rect.right &&
+                   e.clientY >= rect.top  && e.clientY <= rect.bottom;
+
+    if (!inside) {
+      if (active) { active = null; closeBody(bodyTill); closeBody(bodyLenn); }
+      return;
+    }
+
+    const side = (e.clientX - rect.left) < rect.width / 2 ? 'till' : 'lennart';
+    if (side === active) return;
+    active = side;
+    if (side === 'till') { openBody(bodyTill); closeBody(bodyLenn); }
+    else                 { openBody(bodyLenn); closeBody(bodyTill); }
+  });
+})();
+
+/* =========================
    MENU-TITLE-BOX NAVIGATION
 ========================= */
 document.querySelectorAll('.menu-title-box[data-nav]').forEach(box => {
