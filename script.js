@@ -271,12 +271,12 @@ const sidebarToggleBtn = document.getElementById('sidebar-toggle');
 function collapseSidebar() {
   if (window.innerWidth > 900) return;
   sidebarEl.classList.add('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.querySelector('.sidebar-toggle-icon').textContent = '+';
+  if (sidebarToggleBtn) sidebarToggleBtn.classList.remove('open');
 }
 
 function expandSidebar() {
   sidebarEl.classList.remove('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.querySelector('.sidebar-toggle-icon').textContent = '−';
+  if (sidebarToggleBtn) sidebarToggleBtn.classList.add('open');
 }
 
 if (sidebarToggleBtn) {
@@ -340,6 +340,7 @@ function showPage(idx) {
   // Sidebar-Aktivierung
   const section = incoming.querySelector('section[id]') || incoming;
   const id = section.id;
+  document.body.classList.toggle('about-page-active', id === 'about');
   navLinks.forEach(l => {
     l.closest('.tree-item').classList.remove('active');
     l.closest('.tree-item').classList.remove('person-selected');
@@ -697,12 +698,14 @@ document.querySelector('.cassettes-container').addEventListener('mousemove', fun
 
 function handleAbout(id) {
   const body = document.getElementById('body-' + id);
-  const btn  = document.getElementById('btn-' + id);
+  if (!body) return;
   const isOpen = body.classList.contains('open');
 
   // Alle schließen
-  document.querySelectorAll('.about-body').forEach(b => b.classList.remove('open'));
-  document.querySelectorAll('[id^="btn-till"], [id^="btn-lennart"]').forEach(b => b.textContent = '+');
+  document.querySelectorAll('.about-body').forEach(b => {
+    b.classList.remove('open');
+    b.style.removeProperty('max-height');
+  });
 
   // Sidebar-Aktivierung zurücksetzen
   document.querySelectorAll('.nav-link[data-person]').forEach(l => {
@@ -713,9 +716,7 @@ function handleAbout(id) {
   // Angeklicktes öffnen, falls es vorher zu war
   if (!isOpen) {
     body.classList.add('open');
-    btn.textContent = '-';
     currentPerson = id;
-    // Zugehörigen Sidebar-Eintrag aktivieren
     const sidebarLink = document.querySelector(`.nav-link[data-person="${id}"]`);
     if (sidebarLink) {
       sidebarLink.closest('.tree-item').classList.add('active');
@@ -857,8 +858,27 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
   const bodyLenn = document.getElementById('body-lennart');
   if (!aboutEl || !bodyTill || !bodyLenn) return;
 
-  function openBody(b)  { b.style.setProperty('max-height', '400px'); }
+  const navTill = document.querySelector('.nav-link[data-person="till"]');
+  const navLenn = document.querySelector('.nav-link[data-person="lennart"]');
+
+  function forceClose(b) {
+    b.classList.remove('open');
+    b.style.removeProperty('max-height');
+    document.querySelectorAll('.nav-link[data-person]').forEach(l => {
+      if (document.getElementById('body-' + l.dataset.person) === b)
+        l.closest('.tree-item').classList.remove('active', 'person-selected');
+    });
+  }
+  function openBody(b) {
+    [bodyTill, bodyLenn].forEach(other => { if (other !== b) forceClose(other); });
+    b.style.setProperty('max-height', '400px');
+  }
   function closeBody(b) { if (!b.classList.contains('open')) b.style.removeProperty('max-height'); }
+
+  function setDot(person) {
+    if (navTill) navTill.classList.toggle('person-active', person === 'till');
+    if (navLenn) navLenn.classList.toggle('person-active', person === 'lennart');
+  }
 
   let active = null;
 
@@ -875,9 +895,10 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
     const side = inTill ? 'till' : inLennart ? 'lennart' : null;
     if (side === active) return;
     active = side;
-    if (side === 'till')    { openBody(bodyTill); closeBody(bodyLenn); }
+    setDot(side);
+    if (side === 'till')         { openBody(bodyTill); closeBody(bodyLenn); }
     else if (side === 'lennart') { openBody(bodyLenn); closeBody(bodyTill); }
-    else                    { closeBody(bodyTill); closeBody(bodyLenn); }
+    else                         { closeBody(bodyTill); closeBody(bodyLenn); }
   });
 })();
 
