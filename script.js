@@ -358,17 +358,22 @@ function showPage(idx) {
 }
 
 // Mausrad-Navigation
-let datesTopConfirmed = false;
+let datesTopConfirmed    = false;
+let datesBottomConfirmed = false;
 contentEl.addEventListener('wheel', e => {
   const list = document.querySelector('.dates-all-list');
   if (list && list.contains(e.target)) {
-    const atTop = list.scrollTop <= 0;
+    const atTop    = list.scrollTop <= 0;
     const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
-    if (e.deltaY > 0 && !atBottom) { datesTopConfirmed = false; return; }
-    if (e.deltaY < 0 && !atTop)    { datesTopConfirmed = false; return; }
+    if (e.deltaY > 0 && !atBottom) { datesTopConfirmed = false; datesBottomConfirmed = false; return; }
+    if (e.deltaY < 0 && !atTop)    { datesTopConfirmed = false; datesBottomConfirmed = false; return; }
     if (e.deltaY < 0 && atTop) {
       if (!datesTopConfirmed) { datesTopConfirmed = true; return; }
       datesTopConfirmed = false;
+    }
+    if (e.deltaY > 0 && atBottom) {
+      if (!datesBottomConfirmed) { datesBottomConfirmed = true; return; }
+      datesBottomConfirmed = false;
     }
   }
   e.preventDefault();
@@ -861,19 +866,18 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
     if (!aboutEl.classList.contains('active')) return;
 
     const rect = aboutEl.getBoundingClientRect();
-    const inside = e.clientX >= rect.left && e.clientX <= rect.right &&
-                   e.clientY >= rect.top  && e.clientY <= rect.bottom;
+    const rx = (e.clientX - rect.left) / rect.width;
+    const ry = (e.clientY - rect.top)  / rect.height;
 
-    if (!inside) {
-      if (active) { active = null; closeBody(bodyTill); closeBody(bodyLenn); }
-      return;
-    }
+    const inTill    = ry >= 0.5 && rx >= 0.25 && rx <= 0.45;
+    const inLennart = ry >= 0.5 && rx >= 0.60 && rx <= 0.75;
 
-    const side = (e.clientX - rect.left) < rect.width / 2 ? 'till' : 'lennart';
+    const side = inTill ? 'till' : inLennart ? 'lennart' : null;
     if (side === active) return;
     active = side;
-    if (side === 'till') { openBody(bodyTill); closeBody(bodyLenn); }
-    else                 { openBody(bodyLenn); closeBody(bodyTill); }
+    if (side === 'till')    { openBody(bodyTill); closeBody(bodyLenn); }
+    else if (side === 'lennart') { openBody(bodyLenn); closeBody(bodyTill); }
+    else                    { closeBody(bodyTill); closeBody(bodyLenn); }
   });
 })();
 
