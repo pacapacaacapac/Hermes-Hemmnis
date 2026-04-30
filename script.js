@@ -63,6 +63,13 @@ function createParticles(containerId, cfg) {
       my = e.clientY - bounds.top;
       man = true;
     });
+    container.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      var bounds = container.getBoundingClientRect();
+      mx = e.touches[0].clientX - bounds.left;
+      my = e.touches[0].clientY - bounds.top;
+      man = true;
+    }, { passive: false });
     container.appendChild(canvas);
   }
 
@@ -285,7 +292,37 @@ if (sidebarToggleBtn) {
   });
 }
 
-if (window.innerWidth <= 900) collapseSidebar();
+if (window.innerWidth <= 900) {
+  collapseSidebar();
+  document.querySelectorAll('.overlay-header').forEach(header => {
+    const originalSpans = Array.from(header.children);
+
+    function buildSegment() {
+      const seg = document.createElement('span');
+      seg.className = 'marquee-segment';
+      originalSpans.forEach((span, i) => {
+        if (i > 0) {
+          const sep = document.createElement('span');
+          sep.className = 'marquee-sep';
+          seg.appendChild(sep);
+        }
+        seg.appendChild(span.cloneNode(true));
+      });
+      const gap = document.createElement('span');
+      gap.className = 'marquee-gap';
+      seg.appendChild(gap);
+      return seg;
+    }
+
+    const inner = document.createElement('span');
+    inner.className = 'marquee-inner';
+    inner.appendChild(buildSegment());
+    inner.appendChild(buildSegment());
+
+    while (header.firstChild) header.removeChild(header.firstChild);
+    header.appendChild(inner);
+  });
+}
 
 /* =========================
    VARIABLEN
