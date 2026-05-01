@@ -122,6 +122,8 @@ body {
   width: 38%;
   opacity: 0;
   transform: translateX(-150%);
+  mix-blend-mode: invert;
+  pointer-events: none;
 }
 
 @keyframes hermes-lauft {
@@ -144,6 +146,7 @@ body {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 190;
+    width:250%;
   }
 }
 
@@ -1153,7 +1156,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 
   .sidebar-brand-label { display: none; }
   .sidebar.collapsed .sidebar-brand-label { display: inline; }
-  #sidebar-toggle-label { margin-left: auto; font-size: 0.4rem; fontfamily: Roboto mono, monospace; font-weight: 400;}
+  #sidebar-toggle-label { margin-left: auto; font-size: 0.4rem;  font-weight: 400;}
 
   .sidebar-toggle-btn {
     display: flex;
@@ -1349,7 +1352,6 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   }
 
   .about-credits {
-    writing-mode: ;
     bottom: auto;
     left: 0.8rem;
     top: 1.6rem;
