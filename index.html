@@ -42,7 +42,7 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <button class="sidebar-toggle-btn" id="sidebar-toggle">[OPEN MENU]</button>
+  <button class="sidebar-toggle-btn" id="sidebar-toggle"><span class="sidebar-brand-label">HERMES HEMMNIS</span><span id="sidebar-toggle-label">+</span></button>
   <div class="top">
 
     <h1>Hermes Hemmnis</h1>
@@ -231,7 +231,7 @@
 
 <!-- INTRO CAROUSEL OVERLAY -->
 <div class="intro-carousel-overlay" id="intro-carousel-overlay">
-  <button class="intro-carousel-close" onclick="closeIntroCarousel()">×</button>
+  <button class="intro-carousel-close" onclick="closeIntroCarousel()">[close]</button>
   <div class="intro-carousel">
     <div class="intro-carousel-track">
       <img src="./pictures/Only-A-Pic_process1.webp" alt="">
@@ -525,6 +525,11 @@
 <section class="about-section" id="about">
 
   <div class="about-credits">Photo: Jona K. Iuelshade</div>
+
+  <div class="about-name-triggers">
+    <button class="about-name-btn" onclick="handleAbout('till')">Till Knapp</button>
+    <button class="about-name-btn" onclick="handleAbout('lennart')">Lennart Häusser</button>
+  </div>
 
   <div class="about-body about-body-right" id="body-lennart">
     <div class="about-body-inner">

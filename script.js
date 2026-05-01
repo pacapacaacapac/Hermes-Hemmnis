@@ -278,12 +278,14 @@ const sidebarToggleBtn = document.getElementById('sidebar-toggle');
 function collapseSidebar() {
   if (window.innerWidth > 900) return;
   sidebarEl.classList.add('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.textContent = '[OPEN MENU]';
+  const label = document.getElementById('sidebar-toggle-label');
+  if (label) label.textContent = '+';
 }
 
 function expandSidebar() {
   sidebarEl.classList.remove('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.textContent = '[CLOSE MENU]';
+  const label = document.getElementById('sidebar-toggle-label');
+  if (label) label.textContent = '–';
 }
 
 if (sidebarToggleBtn) {
@@ -506,6 +508,8 @@ document.querySelectorAll('.carousel').forEach(carousel => {
 
   if (!imgs.length) return;
 
+  const total = imgs.length;
+
   const firstClone = imgs[0].cloneNode(true);
   const lastClone  = imgs[imgs.length - 1].cloneNode(true);
   track.appendChild(firstClone);
@@ -514,13 +518,40 @@ document.querySelectorAll('.carousel').forEach(carousel => {
   let index = 1;
   track.style.transform = `translateX(-${index * 100}%)`;
 
+  const counter = document.createElement('div');
+  counter.className = 'carousel-counter';
+  carousel.appendChild(counter);
+
+  function getDisplayIndex() {
+    const allCount = track.querySelectorAll('img').length;
+    if (index <= 0) return total;
+    if (index >= allCount - 1) return 1;
+    return index;
+  }
+
+  function updateCounter() {
+    counter.textContent = `${getDisplayIndex()}/${total}`;
+  }
+
   function goTo(i) {
     track.style.transition = 'transform 0.4s ease';
     track.style.transform = `translateX(-${i * 100}%)`;
+    updateCounter();
   }
 
   rightZone.addEventListener('click', () => goTo(++index));
   leftZone.addEventListener('click',  () => goTo(--index));
+
+  let swipeStartX = 0;
+  carousel.addEventListener('touchstart', e => {
+    swipeStartX = e.touches[0].clientX;
+  }, { passive: true });
+  carousel.addEventListener('touchend', e => {
+    const dx = swipeStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) < 40) return;
+    if (dx > 0) goTo(++index);
+    else goTo(--index);
+  }, { passive: true });
 
   track.addEventListener('transitionend', () => {
     const all = track.querySelectorAll('img');
@@ -534,7 +565,10 @@ document.querySelectorAll('.carousel').forEach(carousel => {
       index = all.length - 2;
       track.style.transform = `translateX(-${index * 100}%)`;
     }
+    updateCounter();
   });
+
+  updateCounter();
 });
 
 /* =========================
@@ -580,7 +614,7 @@ function setRelease(id) {
     bgOap.style.opacity  = '1';
     bgNoch.style.opacity = '0';
     cassOap.style.zIndex     = '10';
-    cassOap.style.transform  = 'scale(1.07)';
+    cassOap.style.transform  = 'scale(1.0)';
     cassNoch.style.zIndex    = '5';
     cassNoch.style.transform = 'scale(1)';
     if (creditNoch) creditNoch.style.opacity = '0';
@@ -706,7 +740,7 @@ document.querySelector('.cassettes-container').addEventListener('mousemove', fun
 if (window.innerWidth <= 900) {
   const fsCloseBtn = document.createElement('button');
   fsCloseBtn.className = 'preview-fullscreen-close';
-  fsCloseBtn.textContent = '×';
+  fsCloseBtn.textContent = '[close]';
   document.body.appendChild(fsCloseBtn);
 
   let fsOverlay = null;
@@ -736,6 +770,12 @@ if (window.innerWidth <= 900) {
   }
 
   fsCloseBtn.addEventListener('click', closePreviewFullscreen);
+
+  document.addEventListener('touchstart', (e) => {
+    if (!fsOverlay) return;
+    if (fsOverlay.contains(e.target) || fsCloseBtn.contains(e.target)) return;
+    closePreviewFullscreen();
+  }, { passive: true });
 
   [
     ['arrow-schi',    'preview-schi'],
@@ -788,6 +828,18 @@ function handleAbout(id) {
   }
 }
 
+document.addEventListener('touchstart', (e) => {
+  if (window.innerWidth > 900) return;
+  const openAboutBody = document.querySelector('.about-body.open');
+  if (!openAboutBody) return;
+  if (openAboutBody.contains(e.target)) return;
+  if (e.target.closest('.about-name-triggers')) return;
+  document.querySelectorAll('.about-body').forEach(b => {
+    b.classList.remove('open');
+    b.style.removeProperty('max-height');
+  });
+}, { passive: true });
+
 /* =========================
    OVERLAY HEADER TOGGLE
 ========================= */
@@ -810,6 +862,8 @@ function toggleHeader(el) {
   const right   = overlay.querySelector('.intro-carousel-right');
   const imgs    = Array.from(track.querySelectorAll('img'));
 
+  const total = imgs.length;
+
   const first = imgs[0].cloneNode(true);
   const last  = imgs[imgs.length - 1].cloneNode(true);
   track.appendChild(first);
@@ -818,19 +872,49 @@ function toggleHeader(el) {
   let idx = 1;
   track.style.transform = `translateX(-${idx * 100}%)`;
 
+  const counter = document.createElement('div');
+  counter.className = 'intro-carousel-counter';
+  overlay.appendChild(counter);
+
+  function getDisplayIndex() {
+    const allCount = track.querySelectorAll('img').length;
+    if (idx <= 0) return total;
+    if (idx >= allCount - 1) return 1;
+    return idx;
+  }
+
+  function updateCounter() {
+    counter.textContent = `${getDisplayIndex()}/${total}`;
+  }
+
   function goTo(i) {
     track.style.transition = 'transform 0.4s ease';
     track.style.transform  = `translateX(-${i * 100}%)`;
+    updateCounter();
   }
 
   right.addEventListener('click', () => goTo(++idx));
   left.addEventListener('click',  () => goTo(--idx));
 
+  let swipeStartX = 0;
+  overlay.addEventListener('touchstart', e => {
+    swipeStartX = e.touches[0].clientX;
+  }, { passive: true });
+  overlay.addEventListener('touchend', e => {
+    const dx = swipeStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) < 40) return;
+    if (dx > 0) goTo(++idx);
+    else goTo(--idx);
+  }, { passive: true });
+
   track.addEventListener('transitionend', () => {
     const all = track.querySelectorAll('img');
     if (idx >= all.length - 1) { track.style.transition = 'none'; idx = 1; track.style.transform = `translateX(-${idx * 100}%)`; }
     if (idx <= 0)               { track.style.transition = 'none'; idx = all.length - 2; track.style.transform = `translateX(-${idx * 100}%)`; }
+    updateCounter();
   });
+
+  updateCounter();
 })();
 
 function openIntroCarousel() {
@@ -944,6 +1028,7 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
   let active = null;
 
   document.addEventListener('mousemove', e => {
+    if (window.innerWidth <= 900) return;
     if (!aboutEl.classList.contains('active')) return;
 
     const rect = aboutEl.getBoundingClientRect();

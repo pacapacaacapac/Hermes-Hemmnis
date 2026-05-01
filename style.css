@@ -475,8 +475,13 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
+  pointer-events: none;
   transition: opacity 0.3s ease, max-height 0.35s ease;
   margin-left: 2.25rem;
+}
+
+.section-preview.visible {
+  pointer-events: auto;
 }
 
 .section-preview.visible {
@@ -711,6 +716,18 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   object-fit: cover;
 }
 
+.carousel-counter {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 1rem;
+  z-index: 6;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.5rem;
+  color: white;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
 .carousel-prev,
 .carousel-next {
   position: absolute;
@@ -766,21 +783,37 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 }
 
 .cassette-img {
-  width: 55%;
-  height: 55%;
+  width:  var(--img-w, 120%);
+  height: var(--img-h, 80%);
   filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.5));
   display: block;
 }
 
+/* ── Kassetten: Position & Scale hier anpassen ──────────────────── */
+
 .cassette-oap {
-  left: 6rem;
-  top: 1rem;
+  --left: -2.8rem;
+  --top:   9rem;
+  --scale: 1.6;
+  --img-w: 95%;
+  --img-h: 80%;
+  left:      var(--left);
+  top:       var(--top);
+  transform: scale(var(--scale));
+  transform-origin: top left;
   z-index: 10;
 }
 
 .cassette-noch {
-  left: 5%;
-  top: 2%;
+  --left:  5%;
+  --top:   4%;
+  --scale: 1.6;
+  --img-w: 120%;
+  --img-h: 80%;
+  left:      var(--left);
+  top:       var(--top);
+  transform: scale(var(--scale));
+  transform-origin: top left;
   z-index: 5;
 }
 
@@ -1020,6 +1053,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   z-index: 3;
 }
 
+.about-name-triggers { display: none; }
 
 .release-credits {
   position: absolute;
@@ -1045,7 +1079,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 
 @media (max-width: 900px) {
   html { font-size: 18px; }
-  :root { --mobile-header-h: 3rem; }
+  :root { --mobile-header-h: 1.5rem; }
 
   body { display: block; }
 
@@ -1063,13 +1097,14 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   }
 
   .sidebar .top { padding: 1rem 1.8rem 0; }
-  .sidebar .sidebar-bottom { padding: 0 1rem 1rem; }
+  .sidebar .sidebar-bottom { padding: 1.5rem 1.5rem 1.5rem; }
 
   /* Eingeklappt: nur der Balken */
   .sidebar.collapsed {
-    height: 1rem;
+    height: 1.5rem;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.85);
+    font-family: Inter;
   }
 
   /* Content füllt den Bereich unter der Sidebar */
@@ -1088,14 +1123,19 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
     top: 0;
   }
 
+  .sidebar-brand-label { display: none; }
+  .sidebar.collapsed .sidebar-brand-label { display: inline; }
+  #sidebar-toggle-label { margin-left: auto; font-size: 1rem; }
+
   .sidebar-toggle-btn {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 100%;
-    height: 1rem;
-    padding: 0 0.4rem;
-    font-family: 'Roboto Mono', monospace;
+    height: 1.5rem;
+    padding: 0 1rem;
+    font-family: 'Inter', monospace;
+    font-weight: 600;
     font-size: 0.5rem;
     text-transform: uppercase;
     color: #f5f5f5;
@@ -1103,7 +1143,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
     border: none;
     cursor: pointer;
     white-space: nowrap;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.06em;
   }
 
   .tree { padding-left: 0; margin-bottom: 0.6rem; }
@@ -1162,7 +1202,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   .overlay-header-wrap {
     left: 0.5rem;
     right: 0.5rem;
-    top: 1.5rem;
+    top: 2rem;
   }
 
 
@@ -1172,7 +1212,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   #work-3 .overlay-header-body,
   #work-4 .overlay-header-body,
   #work-5 .overlay-header-body {
-    top: 3rem;
+    top: 3.5rem;
     bottom: auto;
     left: 0.5rem;
     right: 0.5rem;
@@ -1183,7 +1223,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   /* Fullscreen-Preview bei Touch */
   .preview-fs-overlay {
     position: fixed;
-    top: 1rem;
+    top: 1.5rem;
     left: 0; right: 0; bottom: 0;
     background: black;
     z-index: 500;
@@ -1212,17 +1252,19 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   .preview-fullscreen-close {
     display: none;
     position: fixed;
-    top: 0.4rem;
-    right: 0.5rem;
+    bottom: 1rem;
+    right: 1rem;
     z-index: 501;
-    background: none;
+    background: rgba(0, 0, 0, 0.8);
     border: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 0.5rem;
     font-family: 'Roboto Mono', monospace;
+    text-transform: uppercase;
     cursor: pointer;
     line-height: 1;
-    padding: 0.2rem 0.3rem;
+    padding: 0.25rem 0.4rem;
+    letter-spacing: 0.03em;
   }
 
   .preview-fullscreen-close.visible { display: block; }
@@ -1234,8 +1276,41 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   /* Info-Panel volle Breite */
   .info-panel { width: calc(100% - 1.6rem); }
 
-  /* About-Boxen breiter */
-  .about-body { width: clamp(8rem, 70vw, 12rem); }
+  /* About: name trigger buttons at bottom */
+  .about-name-triggers {
+    display: flex;
+    position: absolute;
+    bottom: 1rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    justify-content: center;
+    gap: 0.75rem;
+    z-index: 10;
+
+  }
+
+  .about-name-btn {
+    background: whitesmoke;
+    border: none;
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 0.5rem;
+    font-family: 'Roboto Mono', monospace;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  /* About info boxes: fixed top-center overlay */
+  .about-body {
+    position: fixed;
+    top: 2rem;
+    left: 0.5rem !important;
+    right: 0.5rem !important;
+    width: auto !important;
+    z-index: 300;
+  }
 }
 
 
@@ -1546,6 +1621,35 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.intro-carousel-close {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  font-size: 0.5rem;
+  font-family: 'Roboto Mono', monospace;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  z-index: 5;
+}
+
+.intro-carousel-counter {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 1rem;
+  z-index: 5;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.5rem;
+  color: white;
+  pointer-events: none;
+  letter-spacing: 0.05em;
 }
 
 .intro-carousel-left {
