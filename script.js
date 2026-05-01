@@ -278,12 +278,12 @@ const sidebarToggleBtn = document.getElementById('sidebar-toggle');
 function collapseSidebar() {
   if (window.innerWidth > 900) return;
   sidebarEl.classList.add('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.classList.remove('open');
+  if (sidebarToggleBtn) sidebarToggleBtn.textContent = '[OPEN MENU]';
 }
 
 function expandSidebar() {
   sidebarEl.classList.remove('collapsed');
-  if (sidebarToggleBtn) sidebarToggleBtn.classList.add('open');
+  if (sidebarToggleBtn) sidebarToggleBtn.textContent = '[CLOSE MENU]';
 }
 
 if (sidebarToggleBtn) {
@@ -321,6 +321,12 @@ if (window.innerWidth <= 900) {
 
     while (header.firstChild) header.removeChild(header.firstChild);
     header.appendChild(inner);
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const seg = inner.querySelector('.marquee-segment');
+      const w = seg.getBoundingClientRect().width;
+      inner.style.setProperty('--marquee-offset', `-${w}px`);
+    }));
   });
 }
 
