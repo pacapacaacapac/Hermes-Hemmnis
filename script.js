@@ -294,40 +294,6 @@ if (sidebarToggleBtn) {
 
 if (window.innerWidth <= 900) {
   collapseSidebar();
-  document.querySelectorAll('.overlay-header').forEach(header => {
-    const originalSpans = Array.from(header.children);
-
-    function buildSegment() {
-      const seg = document.createElement('span');
-      seg.className = 'marquee-segment';
-      originalSpans.forEach((span, i) => {
-        if (i > 0) {
-          const sep = document.createElement('span');
-          sep.className = 'marquee-sep';
-          seg.appendChild(sep);
-        }
-        seg.appendChild(span.cloneNode(true));
-      });
-      const gap = document.createElement('span');
-      gap.className = 'marquee-gap';
-      seg.appendChild(gap);
-      return seg;
-    }
-
-    const inner = document.createElement('span');
-    inner.className = 'marquee-inner';
-    inner.appendChild(buildSegment());
-    inner.appendChild(buildSegment());
-
-    while (header.firstChild) header.removeChild(header.firstChild);
-    header.appendChild(inner);
-
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      const seg = inner.querySelector('.marquee-segment');
-      const w = seg.getBoundingClientRect().width;
-      inner.style.setProperty('--marquee-offset', `-${w}px`);
-    }));
-  });
 }
 
 /* =========================
@@ -355,8 +321,7 @@ function showPage(idx) {
   // Alles in der verlassenen Section zuklappen
   outgoing.querySelectorAll('.overlay-header-body.open').forEach(el => {
     el.classList.remove('open');
-    const btn = el.closest('.section-fullscreen')?.querySelector('.overlay-header-toggle');
-    if (btn) btn.textContent = '+';
+    el.closest('.section-fullscreen')?.querySelector('.overlay-header')?.classList.remove('open');
   });
   outgoing.querySelectorAll('.release-body.open').forEach(el => {
     el.classList.remove('open');
@@ -737,6 +702,59 @@ document.querySelector('.cassettes-container').addEventListener('mousemove', fun
   trigger.addEventListener('mouseleave', () => preview.classList.remove('visible'));
 });
 
+// ── Fullscreen-Preview auf Mobile (Touch) ───────────────────────
+if (window.innerWidth <= 900) {
+  const fsCloseBtn = document.createElement('button');
+  fsCloseBtn.className = 'preview-fullscreen-close';
+  fsCloseBtn.textContent = '×';
+  document.body.appendChild(fsCloseBtn);
+
+  let fsOverlay = null;
+
+  function openPreviewFullscreen(imgSrc) {
+    if (fsOverlay) fsOverlay.remove();
+    fsOverlay = document.createElement('div');
+    fsOverlay.className = 'preview-fs-overlay';
+    const track = document.createElement('div');
+    track.className = 'preview-fs-track';
+    const img1 = document.createElement('img');
+    img1.src = imgSrc;
+    img1.className = 'preview-fs-layer';
+    const img2 = document.createElement('img');
+    img2.src = imgSrc;
+    img2.className = 'preview-fs-layer';
+    track.appendChild(img1);
+    track.appendChild(img2);
+    fsOverlay.appendChild(track);
+    document.body.appendChild(fsOverlay);
+    fsCloseBtn.classList.add('visible');
+  }
+
+  function closePreviewFullscreen() {
+    if (fsOverlay) { fsOverlay.remove(); fsOverlay = null; }
+    fsCloseBtn.classList.remove('visible');
+  }
+
+  fsCloseBtn.addEventListener('click', closePreviewFullscreen);
+
+  [
+    ['arrow-schi',    'preview-schi'],
+    ['view-longing',  'preview-longing'],
+    ['dot-skateland', 'preview-skateland'],
+    ['dot-organ',     'preview-organ'],
+    ['more-frank',    'preview-frank'],
+  ].forEach(([triggerId, previewId]) => {
+    const trigger = document.getElementById(triggerId);
+    const preview = document.getElementById(previewId);
+    if (!trigger || !preview) return;
+    trigger.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      const img = preview.querySelector('img');
+      if (img) openPreviewFullscreen(img.src);
+    });
+  });
+}
+
 // ── About Section Logic ──────────────────────────────────────────
 
 function handleAbout(id) {
@@ -775,11 +793,11 @@ function handleAbout(id) {
 ========================= */
 function toggleHeader(el) {
   const section = el.closest('.section-fullscreen');
-  const body = section.querySelector('.overlay-header-body');
-  const btn  = section.querySelector('.overlay-header-toggle');
+  const body   = section.querySelector('.overlay-header-body');
+  const header = section.querySelector('.overlay-header');
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
-  btn.textContent = isOpen ? '+' : '-';
+  header.classList.toggle('open', !isOpen);
 }
 
 /* =========================
@@ -965,8 +983,7 @@ document.querySelectorAll('.menu-title-box[data-nav]').forEach(box => {
     });
     document.querySelectorAll('.overlay-header-body.open').forEach(b => {
       b.classList.remove('open');
-      const btn = b.closest('.section-fullscreen')?.querySelector('.overlay-header-toggle');
-      if (btn) btn.textContent = '+';
+      b.closest('.section-fullscreen')?.querySelector('.overlay-header')?.classList.remove('open');
     });
     currentPerson = null;
 
