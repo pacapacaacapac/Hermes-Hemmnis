@@ -134,8 +134,17 @@ body {
   100% { transform: translateX(310%)  translateY(-12%); opacity: 1; }
 }
 
-.sidebar:has(h1:hover) .hermes-run-img {
+.sidebar:has(h1:hover) .hermes-run-img,
+.sidebar.hermes-animate .hermes-run-img {
   animation: hermes-lauft 4.5s ease-out forwards;
+}
+
+@media (max-width: 900px) {
+  .hermes-run-stage {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 190;
+  }
 }
 
 /* ========================= SIDEBAR TITLE ========================= */
@@ -361,7 +370,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   position: static;
   flex: 1;
   display: grid;
-  grid-template-columns: 5rem 1fr auto auto;
+  grid-template-columns: 5rem 1fr auto;
   gap: 0.65rem;
   padding: 0.2rem 0.45rem;
   background: #f5f5f5;
@@ -376,15 +385,26 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   font-weight: 600;
 }
 
-.overlay-toggle-icon {
-  display: inline-block;
-  transition: transform 0.25s ease;
-  font-size: 0.6rem;
-  line-height: 1;
+.overlay-toggle-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.45rem;
+  background: #f5f5f5;
+  border: none;
+  color: rgba(0, 0, 0, 0.75);
+  cursor: pointer;
 }
 
-.overlay-header.open .overlay-toggle-icon {
-  transform: rotate(180deg);
+.overlay-toggle-btn:hover {
+  font-weight: 600;
+}
+
+.overlay-toggle-icon {
+  display: inline-block;
+  font-size: 0.6rem;
+  line-height: 1;
 }
 
 .overlay-header-body {
@@ -717,15 +737,22 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 }
 
 .carousel-counter {
-  position: absolute;
-  bottom: 0.75rem;
-  left: 1rem;
-  z-index: 6;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.5rem;
-  color: white;
-  pointer-events: none;
-  letter-spacing: 0.05em;
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .carousel-counter {
+    display: block;
+    position: absolute;
+    bottom: 1.15rem;
+    left: 1rem;
+    z-index: 6;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.7rem;
+    color: whitesmoke;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+  }
 }
 
 .carousel-prev,
@@ -735,7 +762,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  color: white;
+  color: whitesmoke;
   font-size: 2rem;
   cursor: pointer;
   z-index: 5;
@@ -792,11 +819,11 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 /* ── Kassetten: Position & Scale hier anpassen ──────────────────── */
 
 .cassette-oap {
-  --left: -2.8rem;
-  --top:   9rem;
-  --scale: 1.6;
-  --img-w: 95%;
-  --img-h: 80%;
+  --left:  6rem;
+  --top:   1rem;
+  --scale: 1;
+  --img-w: 55%;
+  --img-h: 55%;
   left:      var(--left);
   top:       var(--top);
   transform: scale(var(--scale));
@@ -806,10 +833,10 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 
 .cassette-noch {
   --left:  5%;
-  --top:   4%;
-  --scale: 1.6;
-  --img-w: 120%;
-  --img-h: 80%;
+  --top:   2%;
+  --scale: 1;
+  --img-w: 55%;
+  --img-h: 55%;
   left:      var(--left);
   top:       var(--top);
   transform: scale(var(--scale));
@@ -1094,6 +1121,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
     z-index: 200;
     padding: 0;
     display: block;
+    opacity: 1;
   }
 
   .sidebar .top { padding: 1rem 1.8rem 0; }
@@ -1125,7 +1153,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 
   .sidebar-brand-label { display: none; }
   .sidebar.collapsed .sidebar-brand-label { display: inline; }
-  #sidebar-toggle-label { margin-left: auto; font-size: 1rem; }
+  #sidebar-toggle-label { margin-left: auto; font-size: 0.4rem; fontfamily: Roboto mono, monospace; font-weight: 400;}
 
   .sidebar-toggle-btn {
     display: flex;
@@ -1133,17 +1161,17 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
     justify-content: space-between;
     width: 100%;
     height: 1.5rem;
-    padding: 0 1rem;
-    font-family: 'Inter', monospace;
-    font-weight: 600;
-    font-size: 0.5rem;
+    padding: 0 0.5rem 0 0.8rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.6rem;
     text-transform: uppercase;
     color: #f5f5f5;
     background: rgba(0, 0, 0, 0.85);
     border: none;
     cursor: pointer;
     white-space: nowrap;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
   }
 
   .tree { padding-left: 0; margin-bottom: 0.6rem; }
@@ -1178,7 +1206,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   }
 
   /* Overlay-Header: schmalere erste Spalte */
-  .overlay-header { grid-template-columns: 2rem 1fr auto auto; }
+  .overlay-header { grid-template-columns: 2rem 1fr auto; }
 
   /* Marquee für lange Titel */
   .overlay-header span:nth-child(2) {
@@ -1202,7 +1230,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   .overlay-header-wrap {
     left: 0.5rem;
     right: 0.5rem;
-    top: 2rem;
+    top: 2.35rem;
   }
 
 
@@ -1212,7 +1240,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   #work-3 .overlay-header-body,
   #work-4 .overlay-header-body,
   #work-5 .overlay-header-body {
-    top: 3.5rem;
+    top: 3.9rem;
     bottom: auto;
     left: 0.5rem;
     right: 0.5rem;
@@ -1271,7 +1299,7 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
 
 
   /* Dates: weniger Gap */
-  .dates-grid { gap: 0.5rem; }
+  .dates-grid { gap: 0.5rem; margin-top: 1rem;}
 
   /* Info-Panel volle Breite */
   .info-panel { width: calc(100% - 1.6rem); }
@@ -1281,15 +1309,17 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
     display: flex;
     position: absolute;
     bottom: 1rem;
-    left: 0.5rem;
-    right: 0.5rem;
-    justify-content: center;
+    left: 0.8rem;
+    right: 0.8rem;
+    justify-content: space-between;
     gap: 0.75rem;
     z-index: 10;
-
   }
 
   .about-name-btn {
+    flex: none;
+    width: calc(50% - 0.375rem);
+    text-align: center;
     background: whitesmoke;
     border: none;
     color: rgba(0, 0, 0, 0.75);
@@ -1305,17 +1335,54 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   /* About info boxes: fixed top-center overlay */
   .about-body {
     position: fixed;
-    top: 2rem;
+    top: 1.8rem;
     left: 0.5rem !important;
     right: 0.5rem !important;
     width: auto !important;
     z-index: 300;
   }
+
+  /* About: mobiles Hintergrundbild, untere Kante verankert */
+  .about-section {
+    background-image: url('./pictures/About-Mobile.webp');
+    background-position: center bottom;
+  }
+
+  .about-credits {
+    writing-mode: ;
+    bottom: auto;
+    left: 0.8rem;
+    top: 1.6rem;
+    color: rgb(73, 73, 73);
+  }
+
+  /* ── Kassetten Mobile: Position & Scale hier anpassen ──────────── */
+
+  .cassette-oap {
+    --left:  -3rem;
+    --top:   20%;
+    --scale: 1;
+    --img-w: 95%;
+    --img-h: 55%;
+  }
+
+  .cassette-noch {
+    --left:  5%;
+    --top:   7%;
+    --scale: 1;
+    --img-w: 120%;
+    --img-h: 55%;
+  }
+
+  /* Frank Koenen: erstes Bild nach rechts verschieben */
+  #work-5 .carousel-track img:nth-child(2) {
+    object-position: 23% center;
+  }
 }
 
 
 .about {
-  object-fit: cover;
+  object-fit: contain;
   height: 100vh;
   width: 100vh;
 }
@@ -1549,6 +1616,65 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   .dates-all-title { grid-column: 2; }
 }
 
+/* ── DATES ALL V2: Dot hover variant ───────────────────────────── */
+
+.dates-all-v2-section .dates-all-list {
+  grid-template-columns: auto auto 1fr auto auto;
+}
+
+.dates-dot {
+  display: block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  align-self: center;
+  grid-column: 5;
+  grid-row: 1;
+  pointer-events: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.dates-all-item[data-bg] .dates-dot {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.75);
+}
+
+.dates-all-item:not([data-bg]) .dates-dot {
+  display: none;
+}
+
+/* Text spans not interactive in v2 */
+.dates-all-v2-section .dates-all-item > span:not(.dates-dot) {
+  pointer-events: none;
+}
+
+/* Dot in last column — date/detail/title/location keep default columns */
+.dates-all-v2-section .dates-all-date     { grid-column: 1; }
+.dates-all-v2-section .dates-all-detail   { grid-column: 2; }
+.dates-all-v2-section .dates-all-title    { grid-column: 3; }
+.dates-all-v2-section .dates-all-location { grid-column: 4; }
+
+/* Hover only via dot */
+.dates-all-v2-section:has(.dates-dot:hover) {
+  background: transparent;
+  transition-delay: 0.5s;
+}
+
+.dates-all-v2-section .dates-all-list:has(.dates-dot:hover) .dates-all-item[data-bg]:not(:has(.dates-dot:hover)) {
+  opacity: 0;
+  transition: opacity 0.15s 0.6s;
+}
+
+.dates-all-v2-section .dates-all-item:has(.dates-dot:hover) {
+  z-index: 10;
+  font-weight: 600;
+}
+
+.dates-all-v2-section .dates-all-item:has(.dates-dot:hover)::before {
+  opacity: 1;
+}
+
 @media (max-width: 900px) {
   .dates-grid {
     grid-template-columns: 1fr;
@@ -1574,6 +1700,23 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   font-weight: 600;
 }
 
+@media (max-width: 900px) {
+  .intro-arrow {
+    font-size: 0;
+    line-height: normal;
+    vertical-align: baseline;
+  }
+  .intro-arrow b {
+    font-size: 0;
+  }
+  .intro-arrow::after {
+    content: '[more]';
+    font-size: 0.55rem;
+    font-weight: 800;
+    font-style: normal;
+    letter-spacing: -0.05em;
+  }
+}
 
 .about-arrow {
   cursor: pointer;
@@ -1637,19 +1780,26 @@ body.about-page-active .menu-section:has([data-nav="about"]) .menu-title-box {
   padding: 0.25rem 0.4rem;
   letter-spacing: 0.03em;
   line-height: 1;
-  z-index: 5;
+  z-index: 10;
 }
 
 .intro-carousel-counter {
-  position: absolute;
-  bottom: 0.75rem;
-  left: 1rem;
-  z-index: 5;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.5rem;
-  color: white;
-  pointer-events: none;
-  letter-spacing: 0.05em;
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .intro-carousel-counter {
+    display: block;
+    position: absolute;
+    bottom: 0.75rem;
+    left: 1rem;
+    z-index: 5;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.5rem;
+    color: white;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+  }
 }
 
 .intro-carousel-left {

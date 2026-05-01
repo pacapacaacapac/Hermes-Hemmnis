@@ -279,18 +279,30 @@ function collapseSidebar() {
   if (window.innerWidth > 900) return;
   sidebarEl.classList.add('collapsed');
   const label = document.getElementById('sidebar-toggle-label');
-  if (label) label.textContent = '+';
+  if (label) label.textContent = '[open menu]';
 }
 
 function expandSidebar() {
   sidebarEl.classList.remove('collapsed');
   const label = document.getElementById('sidebar-toggle-label');
-  if (label) label.textContent = '–';
+  if (label) label.textContent = '[close menu]';
 }
 
 if (sidebarToggleBtn) {
   sidebarToggleBtn.addEventListener('click', () => {
     sidebarEl.classList.contains('collapsed') ? expandSidebar() : collapseSidebar();
+  });
+}
+
+const sidebarBrandLabel = document.querySelector('.sidebar-brand-label');
+if (sidebarBrandLabel) {
+  sidebarBrandLabel.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.innerWidth > 900) return;
+    if (!sidebarEl.classList.contains('hermes-animate')) {
+      sidebarEl.classList.add('hermes-animate');
+      setTimeout(() => sidebarEl.classList.remove('hermes-animate'), 4500);
+    }
   });
 }
 
@@ -850,6 +862,8 @@ function toggleHeader(el) {
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
   header.classList.toggle('open', !isOpen);
+  const icon = section.querySelector('.overlay-toggle-btn .overlay-toggle-icon');
+  if (icon) icon.textContent = isOpen ? '+' : '−';
 }
 
 /* =========================
@@ -986,12 +1000,20 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
   img.className = 'bg-media bg-dates-hover';
   section.appendChild(img);
 
-  item.querySelectorAll('span').forEach(span => {
-    span.addEventListener('mouseenter', () => img.style.opacity = '1');
-    span.addEventListener('mouseleave', e => {
-      if (!item.contains(e.relatedTarget)) img.style.opacity = '0';
+  if (section.classList.contains('dates-all-v2-section')) {
+    const dot = item.querySelector('.dates-dot');
+    if (dot) {
+      dot.addEventListener('mouseenter', () => img.style.opacity = '1');
+      dot.addEventListener('mouseleave', () => img.style.opacity = '0');
+    }
+  } else {
+    item.querySelectorAll('span').forEach(span => {
+      span.addEventListener('mouseenter', () => img.style.opacity = '1');
+      span.addEventListener('mouseleave', e => {
+        if (!item.contains(e.relatedTarget)) img.style.opacity = '0';
+      });
     });
-  });
+  }
 });
 
 /* =========================
