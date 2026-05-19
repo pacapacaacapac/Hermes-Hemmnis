@@ -310,6 +310,11 @@ if (window.innerWidth <= 900) {
   collapseSidebar();
 }
 
+const sidebarH1 = document.querySelector('.sidebar h1');
+if (sidebarH1) {
+  sidebarH1.addEventListener('click', () => showPage(0));
+}
+
 /* =========================
    VARIABLEN
 ========================= */
@@ -446,6 +451,25 @@ navLinks.forEach(link => {
       const page = target.closest('.section-wrap') || target;
       const idx = pages.indexOf(page);
       if (idx !== -1) { showPage(idx); collapseSidebar(); }
+    }
+    const scrollTo = this.dataset.scrollTo;
+    if (scrollTo) {
+      const scrollTarget = document.getElementById(scrollTo);
+      if (scrollTarget) {
+        setTimeout(() => {
+          const list = scrollTarget.closest('.dates-all-list');
+          if (list) {
+            const firstLabel = list.querySelector('.dates-all-label');
+            const offset = firstLabel ? firstLabel.offsetTop : 0;
+            list.scrollTop = scrollTarget.offsetTop - offset;
+          }
+        }, 50);
+      }
+    } else if (href === 'dates-all') {
+      setTimeout(() => {
+        const list = document.querySelector('#dates-all .dates-all-list');
+        if (list) list.scrollTop = 0;
+      }, 50);
     }
     const release = this.dataset.release;
     if (release === '1') setRelease('oap');
@@ -980,6 +1004,14 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeImprint();
 });
 
+document.addEventListener('click', e => {
+  const overlay = document.getElementById('imprint-overlay');
+  if (!overlay.classList.contains('open')) return;
+  if (overlay.contains(e.target)) return;
+  if (e.target.closest('.imprint-link')) return;
+  closeImprint();
+});
+
 /* =========================
    DATES HOVER BACKGROUNDS
 ========================= */
@@ -1104,3 +1136,5 @@ document.querySelectorAll('.menu-title-box[data-nav]').forEach(box => {
     }
   });
 });
+
+
