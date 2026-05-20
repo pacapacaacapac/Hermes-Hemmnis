@@ -152,7 +152,7 @@ const _p2 = createParticles('container-2', {
 const _p3 = createParticles('container-3', {
   ROWS: 360, COLS: 360,
   THICKNESS: Math.pow(80, 2),
-  SPACING: 2.5,
+  SPACING: window.innerWidth <= 900 ? 2.8 : 2.5,
   MARGIN: 0,
   COLOR: 0,
   DRAG: 0.95,
@@ -466,6 +466,12 @@ contentEl.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
+
+contentEl.addEventListener('touchmove', e => {
+  const list = document.querySelector('.dates-all-list');
+  if (list && list.contains(e.target)) return;
+  e.preventDefault();
+}, { passive: false });
 
 contentEl.addEventListener('touchend', e => {
   const dx = touchStartX - e.changedTouches[0].clientX;
