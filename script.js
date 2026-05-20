@@ -73,7 +73,9 @@ function createParticles(containerId, cfg) {
     container.appendChild(canvas);
   }
 
+  let paused = false;
   function step() {
+    if (paused) return;
     if (!ctx || !w || !h) { requestAnimationFrame(step); return; }
     var i, p, dx, dy, d, f, t, a, b, px, py, n, now;
     if (tog = !tog) {
@@ -117,10 +119,14 @@ function createParticles(containerId, cfg) {
 
   init();
   step();
+  return {
+    pause()  { paused = true; },
+    resume() { if (paused) { paused = false; step(); } },
+  };
 }
 
 // Instanz 1 – original
-createParticles('container', {
+const _p1 = createParticles('container', {
   ROWS: 360, COLS: 360,
   THICKNESS: Math.pow(80, 2),
   SPACING: 1.2,
@@ -131,7 +137,7 @@ createParticles('container', {
 });
 
 // Instanz 2 – anpassbar
-createParticles('container-2', {
+const _p2 = createParticles('container-2', {
   ROWS: 360, COLS: 360,
   THICKNESS: Math.pow(80, 2),
   SPACING: 3,
@@ -143,7 +149,7 @@ createParticles('container-2', {
 });
 
 // Instanz 3 – anpassbar
-createParticles('container-3', {
+const _p3 = createParticles('container-3', {
   ROWS: 360, COLS: 360,
   THICKNESS: Math.pow(80, 2),
   SPACING: 2.5,
@@ -156,32 +162,11 @@ createParticles('container-3', {
   FILL_VIEWPORT: true
 });
 
+const allParticles = [_p1, _p2, _p3].filter(Boolean);
+
 /* =========================
 Bunny Net Einbindung
 ===========================*/
-
-document.querySelectorAll('video[data-hls]').forEach(video => {
-  const src = video.dataset.hls;
-  if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(src);
-    hls.attachMedia(video);
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = src;
-  }
-});
-
-document.querySelectorAll('video[data-hls]').forEach(video => {
-  const src = video.dataset.hls;
-  if (Hls.isSupported()) {
-    const hls = new Hls({
-      maxBufferLength: 30,        // 30 Sekunden vorladen
-      maxMaxBufferLength: 60,     // maximal 60 Sekunden
-    });
-    hls.loadSource(src);
-    hls.attachMedia(video);
-  }
-});
 
 document.querySelectorAll('video[data-hls]').forEach(video => {
   const src = video.dataset.hls;
@@ -322,10 +307,12 @@ const navLinks = document.querySelectorAll('.nav-link');
 const contentEl = document.querySelector('.content');
 const pages = Array.from(contentEl.children);
 
-let currentRelease = 'oap';
-let currentPerson  = null;
-let currentPageIdx = 0;
-let wheelLocked    = false;
+let currentRelease  = 'oap';
+let currentPerson   = null;
+let currentPageIdx  = 0;
+let wheelLocked     = false;
+let wheelAccum      = 0;
+let wheelResetTimer = null;
 
 /* =========================
    CROSSFADE: SEITE WECHSELN
@@ -336,6 +323,17 @@ function showPage(idx) {
 
   const outgoing = pages[currentPageIdx];
   const incoming = pages[idx];
+
+  // Particle-Player und Animationen pausieren beim Verlassen
+  const particleAudio = document.getElementById('particle-audio');
+  const particleWrap2 = document.querySelector('#work')?.closest('.section-wrap');
+  if (particleAudio && outgoing === particleWrap2 && !particleAudio.paused) {
+    particleAudio.pause();
+    const pBtn = document.getElementById('particle-play-btn');
+    if (pBtn) pBtn.textContent = '▶';
+  }
+  if (outgoing === particleWrap2) allParticles.forEach(p => p.pause());
+  if (incoming === particleWrap2) allParticles.forEach(p => p.resume());
 
   // Alles in der verlassenen Section zuklappen
   outgoing.querySelectorAll('.overlay-header-body.open').forEach(el => {
@@ -355,12 +353,44 @@ function showPage(idx) {
     if (btn) btn.textContent = '+';
   });
 
-  // Alte Section bleibt sichtbar (darunter), neue blendet darüber ein
-  outgoing.classList.remove('active');
-  outgoing.classList.add('leaving');
-  incoming.classList.add('active');
+  // Scroll-Transition nur zwischen Dates und Particle-Pattern
+  const datesWrap    = document.querySelector('#dates-all')?.closest('.section-wrap');
+  const particleWrap = document.querySelector('#work')?.closest('.section-wrap');
+  const isScrollTrans = (outgoing === datesWrap && incoming === particleWrap) ||
+                        (outgoing === particleWrap && incoming === datesWrap);
 
-  setTimeout(() => outgoing.classList.remove('leaving'), 700);
+  if (isScrollTrans) {
+    const dir = idx > currentPageIdx ? 1 : -1;
+    outgoing.classList.remove('active');
+    Object.assign(outgoing.style, { opacity: '1', zIndex: '1' });
+    Object.assign(incoming.style, {
+      opacity: '1', zIndex: '2', pointerEvents: 'none',
+      transform: `translateY(${dir > 0 ? '100%' : '-100%'})`,
+      transition: 'none',
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      Object.assign(outgoing.style, {
+        transform: `translateY(${dir > 0 ? '-100%' : '100%'})`,
+        transition: 'transform 0.7s ease',
+      });
+      Object.assign(incoming.style, {
+        transform: 'translateY(0)',
+        transition: 'transform 0.7s ease',
+        pointerEvents: 'auto',
+      });
+      setTimeout(() => {
+        incoming.classList.add('active');
+        outgoing.style.cssText = '';
+        incoming.style.cssText = '';
+      }, 710);
+    }));
+  } else {
+    // Normaler Crossfade
+    outgoing.classList.remove('active');
+    outgoing.classList.add('leaving');
+    incoming.classList.add('active');
+    setTimeout(() => outgoing.classList.remove('leaving'), 700);
+  }
 
   currentPageIdx = idx;
 
@@ -406,10 +436,20 @@ contentEl.addEventListener('wheel', e => {
   }
   e.preventDefault();
   if (wheelLocked) return;
+
+  clearTimeout(wheelResetTimer);
+  wheelAccum += e.deltaY;
+  wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, 200);
+  if (Math.abs(wheelAccum) < 50) return;
+
+  const dir = wheelAccum > 0 ? 1 : -1;
+  wheelAccum = 0;
+  clearTimeout(wheelResetTimer);
+
   wheelLocked = true;
   collapseSidebar();
-  showPage(e.deltaY > 0 ? currentPageIdx + 1 : currentPageIdx - 1);
-  setTimeout(() => { wheelLocked = false; }, 900);
+  showPage(currentPageIdx + dir);
+  setTimeout(() => { wheelLocked = false; }, 1100);
 }, { passive: false });
 
 // Pfeil-Tasten-Navigation
@@ -990,6 +1030,54 @@ document.querySelector('.sidebar').addEventListener('click', e => {
 });
 
 /* =========================
+   PARTICLE PLAYER
+========================= */
+const particleTracks = [
+  { title: 'Track Title 1', src: './audio/track1.mp3' },
+  { title: 'Track Title 2', src: './audio/track2.mp3' },
+  { title: 'Track Title 3', src: './audio/track3.mp3' },
+];
+
+(function () {
+  const audio   = document.getElementById('particle-audio');
+  const btn     = document.getElementById('particle-play-btn');
+  const titleEl = document.getElementById('particle-track-title');
+  const player  = document.getElementById('particle-player');
+  if (!audio || !btn || !titleEl || !particleTracks.length) return;
+
+  let lastIdx = -1;
+
+  function pickRandom() {
+    if (particleTracks.length === 1) return 0;
+    let idx;
+    do { idx = Math.floor(Math.random() * particleTracks.length); } while (idx === lastIdx);
+    return idx;
+  }
+
+  function playRandom() {
+    const idx = pickRandom();
+    lastIdx = idx;
+    const track = particleTracks[idx];
+    audio.src = track.src;
+    audio.play();
+    titleEl.textContent = track.title;
+    titleEl.classList.add('visible');
+    btn.textContent = '❚❚';
+  }
+
+  player.addEventListener('click', () => {
+    if (audio.paused) {
+      playRandom();
+    } else {
+      audio.pause();
+      btn.textContent = '▶';
+    }
+  });
+
+  audio.addEventListener('ended', playRandom);
+})();
+
+/* =========================
    IMPRINT OVERLAY
 ========================= */
 function openImprint() {
@@ -1032,17 +1120,34 @@ document.querySelectorAll('.dates-all-item[data-bg]').forEach(item => {
   img.className = 'bg-media bg-dates-hover';
   section.appendChild(img);
 
+  const creditText = item.dataset.credit;
+  const creditEl = creditText ? document.createElement('div') : null;
+  if (creditEl) {
+    creditEl.className = 'dates-bg-credit';
+    creditEl.textContent = creditText;
+    section.appendChild(creditEl);
+  }
+
+  function showBg() {
+    img.style.opacity = '1';
+    if (creditEl) creditEl.classList.add('visible');
+  }
+  function hideBg() {
+    img.style.opacity = '0';
+    if (creditEl) creditEl.classList.remove('visible');
+  }
+
   if (section.classList.contains('dates-all-v2-section')) {
     const dot = item.querySelector('.dates-dot');
     if (dot) {
-      dot.addEventListener('mouseenter', () => img.style.opacity = '1');
-      dot.addEventListener('mouseleave', () => img.style.opacity = '0');
+      dot.addEventListener('mouseenter', showBg);
+      dot.addEventListener('mouseleave', hideBg);
     }
   } else {
     item.querySelectorAll('span').forEach(span => {
-      span.addEventListener('mouseenter', () => img.style.opacity = '1');
+      span.addEventListener('mouseenter', showBg);
       span.addEventListener('mouseleave', e => {
-        if (!item.contains(e.relatedTarget)) img.style.opacity = '0';
+        if (!item.contains(e.relatedTarget)) hideBg();
       });
     });
   }
@@ -1133,6 +1238,12 @@ document.querySelectorAll('.menu-title-box[data-nav]').forEach(box => {
       const page = target.closest('.section-wrap') || target;
       const idx = pages.indexOf(page);
       if (idx !== -1) { showPage(idx); collapseSidebar(); }
+    }
+    if (targetId === 'dates-all') {
+      setTimeout(() => {
+        const list = document.querySelector('#dates-all .dates-all-list');
+        if (list) list.scrollTop = 0;
+      }, 50);
     }
   });
 });
